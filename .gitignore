@@ -1,0 +1,26 @@
+# Local configuration and secrets
+config.json
+.env
+.env.*
+!.env.example
+
+# Runtime state and logs
+data/
+*.log
+*.log.[0-9]*
+
+# PowerShell tooling and test output
+.PSScriptAnalyzerSettings.psd1.user
+TestResults/
+*.trx
+*.clixml
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*.tmp
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini

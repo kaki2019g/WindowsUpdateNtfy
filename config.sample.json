@@ -1,0 +1,9 @@
+{
+  "ServerUrl": "https://ntfy.sh",
+  "Topic": "ここに十分長く推測されにくいトピック名を入力",
+  "Token": "",
+  "LogDirectory": "data\\logs",
+  "StateFile": "data\\state.json",
+  "LogMaxBytes": 1048576,
+  "LogGenerations": 5
+}
