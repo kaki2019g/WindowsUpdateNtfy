@@ -111,8 +111,12 @@ if ($DryRun) {
 
 Invoke-Git -GitArguments @("commit", "-m", $Message)
 
-& git -c $script:GitSafetyOption rev-parse --abbrev-ref --symbolic-full-name "@{upstream}" *> $null
-if ($LASTEXITCODE -eq 0) {
+$upstream = (Invoke-Git -GitArguments @(
+    "for-each-ref",
+    "--format=%(upstream:short)",
+    "refs/heads/$branch"
+) | Select-Object -First 1)
+if (-not [string]::IsNullOrWhiteSpace($upstream)) {
     Invoke-Git -GitArguments @("push")
 }
 else {
