@@ -24,3 +24,5 @@ TestResults/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+commit_and_push.ps1

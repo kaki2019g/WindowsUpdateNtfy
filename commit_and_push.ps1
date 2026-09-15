@@ -5,7 +5,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$script:RepositoryPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..")).Replace("\", "/")
+$script:RepositoryPath = [IO.Path]::GetFullPath($PSScriptRoot).Replace("\", "/").TrimEnd("/")
 $script:GitSafetyOption = "safe.directory=$($script:RepositoryPath)"
 
 function Invoke-Git {
@@ -74,13 +74,18 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     throw "Git was not found in PATH."
 }
 
+Set-Location -LiteralPath $PSScriptRoot
+
 $insideWorkTree = (& git -c $script:GitSafetyOption rev-parse --is-inside-work-tree 2>$null)
 if ($LASTEXITCODE -ne 0 -or $insideWorkTree -ne "true") {
-    throw "Run this script inside a Git repository."
+    throw "Place this script in the root of a Git repository."
 }
 
 $repoRoot = (Invoke-Git -GitArguments @("rev-parse", "--show-toplevel") | Select-Object -First 1)
-Set-Location $repoRoot
+$normalizedRepoRoot = [IO.Path]::GetFullPath($repoRoot).Replace("\", "/").TrimEnd("/")
+if (-not [string]::Equals($normalizedRepoRoot, $script:RepositoryPath, [StringComparison]::OrdinalIgnoreCase)) {
+    throw "This script must be placed directly in the repository root: $normalizedRepoRoot"
+}
 
 $branch = (Invoke-Git -GitArguments @("branch", "--show-current") | Select-Object -First 1)
 if ([string]::IsNullOrWhiteSpace($branch)) {
